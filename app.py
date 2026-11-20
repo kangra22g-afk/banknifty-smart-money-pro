@@ -33,6 +33,33 @@ def make_client(cid, tok):
 
 try:
     api = make_client(client_id, token)
+    
+api = make_client(client_id, tok)
+
+# Dhan Authentication Test
+profile_resp = api.session.get(
+    "https://api.dhan.co/v2/profile",
+    timeout=20
+)
+
+st.write("Profile HTTP Status:", profile_resp.status_code)
+
+try:
+    profile_data = profile_resp.json()
+    st.write("Token Validity:", profile_data.get("tokenValidity"))
+    st.write("Data API Plan:", profile_data.get("dataPlan"))
+    st.write("Data Validity:", profile_data.get("dataValidity"))
+    st.write(
+        "Client ID Match:",
+        str(profile_data.get("dhanClientId")) == str(client_id)
+    )
+except Exception:
+    st.write("Response:", profile_resp.text[:500])
+
+st.stop()
+
+expiries = api.expiry_list()
+
     expiries = api.expiry_list()
     if not expiries:
         st.error("Dhan से expiry list नहीं मिली। Token, Data API subscription और market access जाँचें।")
